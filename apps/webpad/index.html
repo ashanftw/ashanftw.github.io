@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/sv25Y6j/clipboard-9244115.png">
+    <title>WebPad</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f4;
+        }
+
+        .editor-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            background-color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .line-numbers {
+            width: 50px;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #242424;
+            color: gold;
+            text-align: right;
+            overflow: hidden;
+            font-size: 16px;
+            line-height: 1.5;
+            white-space: nowrap;
+            font-family: "Fira Code", serif;
+        }
+
+        .text-area-container {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            resize: none;
+            font-family: inherit;
+            font-size: 16px;
+            line-height: 1.5;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: black;
+            color: #39FF14;
+            caret-color: red;
+            font-family: "Fira Code", serif;
+        }
+
+        textarea:focus {
+            border: none;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="editor-container">
+        <div class="line-numbers" id="lineNumbers"></div>
+        <div class="text-area-container">
+            <textarea id="editor" placeholder="Start typing here..."></textarea>
+        </div>
+    </div>
+
+    <script>
+        const textarea = document.getElementById('editor');
+        const lineNumbers = document.getElementById('lineNumbers');
+
+        function updateLineNumbers() {
+            const textLength = textarea.value.length;
+            document.title = `WebPad | Word Count : ${textLength}`;
+            const lines = textarea.value.split('\n').length;
+            lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) => i + 1).join('<br>');
+        }
+
+        // Update line numbers on input or scroll
+        textarea.addEventListener('input', updateLineNumbers);
+        textarea.addEventListener('scroll', () => {
+            lineNumbers.scrollTop = textarea.scrollTop;
+        });
+
+        // Initialize line numbers
+        updateLineNumbers();
+    </script>
+</body>
+</html>
