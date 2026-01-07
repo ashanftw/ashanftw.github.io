@@ -1,101 +1,184 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/sv25Y6j/clipboard-9244115.png">
-    <title>WebPad</title>
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f4f4f4;
-        }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        .editor-container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            box-sizing: border-box;
-            background-color: #fff;
-            font-family: Arial, sans-serif;
-        }
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap"
+            rel="stylesheet"
+        />
 
-        .line-numbers {
-            width: 50px;
-            padding: 10px;
-            box-sizing: border-box;
-            background-color: #242424;
-            color: gold;
-            text-align: right;
-            overflow: hidden;
-            font-size: 16px;
-            line-height: 1.5;
-            white-space: nowrap;
-            font-family: "Fira Code", serif;
-        }
+        <title>WebPad</title>
 
-        .text-area-container {
-            flex: 1;
-            overflow: hidden;
-        }
+        <style>
+            /* RESET & LAYOUT FIX */
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                font-family: "Fira Code", monospace;
+                background-color: #000;
+            }
 
-        textarea {
-            width: 100%;
-            height: 100%;
-            border: none;
-            outline: none;
-            resize: none;
-            font-family: inherit;
-            font-size: 16px;
-            line-height: 1.5;
-            padding: 10px;
-            box-sizing: border-box;
-            background-color: black;
-            color: #39FF14;
-            caret-color: red;
-            font-family: "Fira Code", serif;
-        }
+            .app-root {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
 
-        textarea:focus {
-            border: none;
-            outline: none;
-        }
-    </style>
-</head>
-<body>
-    <div class="editor-container">
-        <div class="line-numbers" id="lineNumbers"></div>
-        <div class="text-area-container">
-            <textarea id="editor" placeholder="Start typing here..."></textarea>
+            /* TOOLBAR */
+            .toolbar {
+                background-color: #0f0f0f;
+                padding: 10px 14px;
+                border-bottom: 1px solid #222;
+            }
+
+            .btn-primary {
+                font-size: 13px;
+                letter-spacing: 0.5px;
+                padding: 8px 16px;
+                color: #39ff14;
+                background-color: transparent;
+                border: 1px solid #39ff14;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.2s ease-in-out;
+            }
+
+            .btn-primary:hover {
+                background-color: #39ff14;
+                color: #000;
+            }
+
+            .btn-primary:active {
+                transform: scale(0.97);
+            }
+
+            .btn-primary:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(57, 255, 20, 0.4);
+            }
+
+            /* EDITOR */
+            .editor-container {
+                flex: 1;
+                display: flex;
+                width: 100%;
+                overflow: hidden;
+            }
+
+            .line-numbers {
+                width: 50px;
+                padding: 10px;
+                background-color: #242424;
+                color: gold;
+                text-align: right;
+                font-size: 16px;
+                line-height: 1.5;
+                user-select: none;
+                overflow: hidden;
+            }
+
+            .text-area-container {
+                flex: 1;
+                overflow: hidden;
+            }
+
+            textarea {
+                width: 100%;
+                height: 100%;
+                border: none;
+                outline: none;
+                resize: none;
+                padding: 10px;
+                font-size: 16px;
+                line-height: 1.5;
+                background-color: #000;
+                color: #39ff14;
+                caret-color: red;
+                overflow-x: hidden;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="app-root">
+            <!-- TOOLBAR -->
+            <div class="toolbar">
+                <button id="capitalizeBtn" class="btn-primary">
+                    CAPITALIZE
+                </button>
+                <button id="clearBtn" class="btn-primary">CLEAR</button>
+            </div>
+
+            <!-- EDITOR -->
+            <div class="editor-container">
+                <div class="line-numbers" id="lineNumbers"></div>
+                <div class="text-area-container">
+                    <textarea
+                        id="editor"
+                        placeholder="Start typing here..."
+                    ></textarea>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <script>
-        const textarea = document.getElementById('editor');
-        const lineNumbers = document.getElementById('lineNumbers');
+        <script>
+            const textarea = document.getElementById("editor");
+            const lineNumbers = document.getElementById("lineNumbers");
+            const capitalizeBtn = document.getElementById("capitalizeBtn");
+            const clearBtn = document.getElementById("clearBtn");
 
-        function updateLineNumbers() {
-            const textLength = textarea.value.length;
-            document.title = `WebPad | Word Count : ${textLength}`;
-            const lines = textarea.value.split('\n').length;
-            lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) => i + 1).join('<br>');
-        }
+            function updateLineNumbers() {
+                document.title = `WebPad | Word Count : ${textarea.value.length}`;
+                const lines = textarea.value.split("\n").length;
+                lineNumbers.innerHTML = Array.from(
+                    { length: lines },
+                    (_, i) => i + 1,
+                ).join("<br>");
+            }
 
-        // Update line numbers on input or scroll
-        textarea.addEventListener('input', updateLineNumbers);
-        textarea.addEventListener('scroll', () => {
-            lineNumbers.scrollTop = textarea.scrollTop;
-        });
+            textarea.addEventListener("input", updateLineNumbers);
 
-        // Initialize line numbers
-        updateLineNumbers();
-    </script>
-</body>
+            textarea.addEventListener("scroll", () => {
+                lineNumbers.scrollTop = textarea.scrollTop;
+            });
+
+            capitalizeBtn.addEventListener("click", () => {
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+
+                if (start !== end) {
+                    const before = textarea.value.slice(0, start);
+                    const selected = textarea.value.slice(start, end);
+                    const after = textarea.value.slice(end);
+
+                    textarea.value = before + selected.toUpperCase() + after;
+                    textarea.setSelectionRange(start, end);
+                } else {
+                    textarea.value = textarea.value.toUpperCase();
+                    textarea.setSelectionRange(0, textarea.value.length);
+                }
+
+                textarea.focus();
+                updateLineNumbers();
+            });
+
+            clearBtn.addEventListener("click", () => {
+                textarea.value = "";
+                textarea.focus();
+                updateLineNumbers();
+            });
+
+            updateLineNumbers();
+        </script>
+    </body>
 </html>
