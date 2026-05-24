@@ -156,7 +156,7 @@
       transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease;
       background: rgba(255,255,255,0.5); backdrop-filter: blur(4px); overflow: hidden;
     }
-    .event-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(184,150,12,0.05), rgba(107,16,32,0.05)); opacity: 0; transition: opacity 0.4s; }
+    .event-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(184,150,12,0.05), rgba(107,16,32,0.05)); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
     .event-card:hover { transform: translateY(-8px); box-shadow: 0 20px 60px rgba(0,0,0,0.1); }
     .event-card:hover::before { opacity: 1; }
 
@@ -286,7 +286,7 @@
           <h2 class="event-name">Church Ceremony</h2>
           <p class="event-time">7:30 in the Morning</p>
           <p class="event-venue">St. James the Great's Church<br/>Mutwal</p>
-          <a class="map-btn" href="https://www.google.com/maps/place/St.+James+the+Great%27s+Church+-+Mutwal/data=!4m2!3m1!1s0x0:0x37b2f2841b61b267?sa=X&ved=1t:2428&ictx=111" target="_blank" rel="noopener">
+          <a class="map-btn" href="https://www.google.com/maps/search/St+James+the+Great+Church+Mutwal+Sri+Lanka" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
             View on Map
           </a>
@@ -300,7 +300,7 @@
           <h2 class="event-name">Wedding Celebration</h2>
           <p class="event-time">10:30 AM – 3:00 PM</p>
           <p class="event-venue">Grandeeza Hotel<br/>Negombo</p>
-          <a class="map-btn" href="https://www.google.com/maps/place/negombo+grandeeza/data=!4m2!3m1!1s0x3ae2ee5b3997ac1d:0xf856b39f9f7e0490?sa=X&ved=1t:242&ictx=111" target="_blank" rel="noopener">
+          <a class="map-btn" href="https://www.google.com/maps/search/Grandeeza+Hotel+Negombo+Sri+Lanka" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
             View on Map
           </a>
@@ -417,6 +417,7 @@
 
   // Ripple
   function addRipple(e,el){
+    if(e.target.closest('a')) return;
     const rect=el.getBoundingClientRect();
     const r=document.createElement('div');
     r.className='ripple-circle';
